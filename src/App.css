@@ -1,3 +1,8 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 .App {
   text-align: center;
 }
@@ -15,6 +20,57 @@
 
 
 .main-sort-box{
-  transform: rotate(270deg);
-  border-left: 2px solid white;
+  display: flex;
+  transform: rotate3d(360, 0, 60, 180deg); 
+  height: 200px;
+  margin-top: 20vh;
+  /* border-left: 2px solid white; */
+}
+/* .blocks{
+  display: flex;
+  transform: rotateZ('180deg');
+} */
+.slider{
+  width: 25vw;
+  height: 5vh;
+}
+.slider:disabled{
+  color: gray;
+}
+
+Button{
+  color: white;
+  size: 100px;
+  position: relative;
+  text-align: center;
+  margin-top: 10px;
+  margin: 10px;
+  width: 10vh;
+  height: 10vh;
+  border: none;
+  border-radius: 63px;
+  border-radius: 50%;
+  background: linear-gradient(225deg, #2b2f38, #24282f);
+  box-shadow:  -5px 5px 21px #101215,
+               5px -5px 21px #404653;
+}
+Button:active{
+  color: aquamarine;
+  border-radius: 50%;
+  background: linear-gradient(225deg, #24282f, #2b2f38);
+  box-shadow:  -5px 5px 21px #101215,
+               5px -5px 21px #404653;
+}
+Button:disabled{
+  color: grey;
+  text-decoration: line-through;
+  border: 1px solid gray;
+  border-radius: 50%;
+  background: linear-gradient(225deg, #24282f, #2b2f38);
+  box-shadow:  -5px 5px 21px #101215,
+               5px -5px 21px #404653;
+}
+
+.button-box{
+  margin-top: 20px;
 }

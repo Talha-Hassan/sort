@@ -1,77 +1,107 @@
-import { render } from '@testing-library/react';
 import './App.css';
+import './Pop.css';
 import { useEffect, useState } from 'react';
+import Block from './component/blocks';
 
 function App() {
-  const block = 100
-  let [refresh,setRefresh] = useState(true)
-  let [lines,setLines] = useState([])
-  let [button,setButton] = useState(false)
+  const block = 50
+  const [ele,setEle] = useState()
+  const [data,setData] = useState([])
+  const [active,setActive] = useState(false)
+  const [anime,setAnime] = useState()
+  const [speed,Setspeed] = useState(10)
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   useEffect(()=>{
+    shuffle()
+  },[])
+  
+  const shuffle = ()=>{
     let arr= []
     for(let i=1 ; i<=block;i++){
-      let random = Math.ceil(Math.random() * block)
-      arr.push(<div data={random} key={i} style={{width : `${random}px`, height: '3px', background: 'white',border: '1px solid black'}}></div>)
+      let random = Math.ceil(Math.random() *  block + 5)
+      // arr.push(<div data={random} key={i} style={{width : `${random}px`, height: '3px', background: 'white',border: '1px solid black'}}></div>)
+      arr.push(random)
     }
-    setLines(arr)
-  },[])
+    setData(arr)
+  }
+  
   const sort = async ()=>{
-    setButton(!button)
-    for(let i = 0 ; i< (block - 1) ; i++){
-      for(let j=0 ; j< (block - 1 -i );j++){
-        if(lines[j].props.data > lines[j+1].props.data ){
-          // console.log("working")
-          // data(j,j+1)
-          lines[j] = <div data={lines[j].props.data} key={lines[j].key} style={{width : `${lines[j].props.style.width}`, height: '3px', background: 'lime',border: '1px solid black'}}></div>
-          lines[j+1] = <div data={lines[j+1].props.data} key={lines[j+1].key} style={{width : `${lines[j+1].props.style.width}`, height: '3px', background: 'lime',border: '1px solid black'}}></div>
-          setRefresh(!refresh)
-          
-          let data = lines[j].props.data
-          let width = lines[j].props.style.width
-          let key = lines[j].key
-          await sleep(10)
-          setRefresh(!refresh)
-          setRefresh(!refresh)
-          // console.log("working")
-            
-          lines[j] = <div data={lines[j+1].props.data} key={lines[j+1].key} style={{width : `${lines[j+1].props.style.width}`, height: '3px', background: 'lime',border: '1px solid black'}}></div>
-          lines[j+1] = <div data={data} key={key} style={{width : `${width}px`, height: '3px', background: 'lime',border: '1px solid black'}}></div>
-           
-          
-          lines[j] = <div data={lines[j].props.data} key={lines[j].key} style={{width : `${lines[j].props.style.width}`, height: '3px', background: 'white',border: '1px solid black'}}></div>
-          lines[j+1] = <div data={lines[j+1].props.data} key={lines[j+1].key} style={{width : `${lines[j+1].props.style.width}`, height: '3px', background: 'white',border: '1px solid black'}}></div>
-    
+    setActive(true)
+    let tempData = [...data]
+
+    for(let i = 0 ; i < (block) ; i++){
+      for(let j=0 ; j< (block -i );j++){
+        if(tempData[j] > tempData[j+1] ){
+          [tempData[j],tempData[j+1]] = [tempData[j+1],tempData[j]]
+          setData([...tempData])
+          setEle(tempData[j+1])
+          setAnime(j+1)
+          await new Promise(resolve => setTimeout(resolve, speed));
         }
       }
     }
-    setButton(!button)
+    
+    setEle(null)
+    setAnime(null)
+    setActive(false)
   }
- 
-  // const data = (ind1,ind2)=>{
-    
-  //   let data = lines[ind1].props.data
-  //   let width = lines[ind1].props.style.width
-  //   let key = lines[ind1].key
-    
-  //   lines[ind1] = <div data={lines[ind2].props.data} key={lines[ind2].key} style={{width : `${lines[ind2].props.style.width}`, height: '3px', background: 'lime',border: '1px solid black'}}></div>
-  //   lines[ind2] = <div data={data} key={key} style={{width : `${width}px`, height: '3px', background: 'lime',border: '1px solid black'}}></div>
-   
-  // }
+const getNewStyle =(newStyle = false,width= null, data=null,color=null,style=null)=>{
+  let temp 
+    if(newStyle){
+      temp = {
+        width : `${width}vw`,
+        height : `${data}vh`,
+        background : `${color}`
+      }
+    }
+    else if(color){
+      temp = {
+        ...style ,
+        background : `${color}`
+      }
+    }
+    else{
+      temp = {
+        ...style ,
+        height : `${data}px`
+      }
+    }
+
+    return temp
+}
   
   return (
     <div className="App">
       <div className="Main">
         <div className='main-sort-box'>
-          { lines }
+          {/* <div className='blocks'> */}
+            { data.map((i,k)=>{
+              return <div data={i} key={k} style={(i===ele & k===anime)?getNewStyle(1,2,i,'lime') :getNewStyle(1,2,i,'white')} />
+              
+            }) }
+          {/* </div> */}
         </div>
+        <div className='button-box'>
+
           <button 
-            // disabled={button} 
+            disabled={active} 
             onClick={sort}
-          >
+            >
               Sort
             </button>
+          <button 
+            disabled={active}
+            onClick={shuffle}
+            >
+              Shuffle
+            </button>
+            {/* <Block /> */}
+          </div>
+          <div className="slidecontainer">
+            <input disabled={active} type="range" min="1" max="100" value={speed} onChange={(c)=>{Setspeed(c.target.value)}} className="slider" id="myRange" />
+          </div>
+          <h2>Bubble Sort</h2>
       </div>
     </div>
   );
